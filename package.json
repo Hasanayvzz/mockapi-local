@@ -1,6 +1,6 @@
 {
   "name": "mockapi-local",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A smart local mock REST API server generated from a JSON schema file. Auto-generates realistic fake data, full CRUD endpoints, relational queries, and OpenAPI specs.",
   "type": "module",
   "bin": {
@@ -15,6 +15,7 @@
   "files": [
     "src/",
     "examples/",
+    "docs/",
     "README.md",
     "LICENSE"
   ],

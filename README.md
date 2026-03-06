@@ -4,7 +4,40 @@
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)
 
-A smart local mock REST API server generated from a JSON schema file. Generate realistic fake data, full CRUD endpoints, relational queries, and an OpenAPI spec — all from a single config file.
+> Tired of writing mock data by hand or waiting for the backend team?
+> Define a schema, run one command, get a full REST API instantly.
+
+**Define your own JSON schema → Get a full REST API with realistic fake data instantly.**
+
+No more manually writing mock data. No more waiting for the backend team. Just describe what your API should look like in a simple JSON file, and mockapi-local generates everything: realistic data, CRUD endpoints, relations, pagination, filtering, sorting, and even an OpenAPI spec.
+
+---
+
+## 🤔 How It Works
+
+**1. You define a schema** — Describe your resources, fields, and relationships in a JSON file. Use any structure you want: e-commerce, social media, crypto exchange, CMS, IoT — anything.
+
+**2. mockapi-local generates realistic data** — Using 60+ built-in field types (names, emails, prices, dates, UUIDs...) powered by faker.js. Unknown types are auto-resolved.
+
+**3. A full REST API is ready** — Every resource gets GET, POST, PUT, PATCH, DELETE endpoints with pagination, filtering, sorting, and relational queries. Out of the box.
+
+```
+┌─────────────────┐      ┌──────────────────┐      ┌──────────────────────────┐
+│   schema.json   │ ───▶ │  mockapi-local   │ ───▶ │  Full REST API Server    │
+│                 │      │                  │      │                          │
+│  Your resources │      │  Generates fake  │      │  GET    /products        │
+│  Your fields    │      │  data from your  │      │  POST   /products        │
+│  Your relations │      │  schema          │      │  GET    /products/:id    │
+│  Your config    │      │                  │      │  PUT    /products/:id    │
+│                 │      │                  │      │  PATCH  /products/:id    │
+│                 │      │                  │      │  DELETE /products/:id    │
+│                 │      │                  │      │  GET    /products/:id/   │
+│                 │      │                  │      │         reviews          │
+│                 │      │                  │      │  GET    /_spec           │
+└─────────────────┘      └──────────────────┘      └──────────────────────────┘
+```
+
+![mockapi-local terminal output](docs/terminal-screenshot.png)
 
 ---
 
@@ -22,6 +55,81 @@ mockapi-local serve schema.json --port 3000
 ```
 
 Your mock API is now running at `http://localhost:3000` 🚀
+
+---
+
+## 🌍 Real-World Example: Crypto Exchange API
+
+mockapi-local is not limited to simple "users and posts" — you can model **any domain**. Here's a crypto exchange:
+
+```json
+{
+  "resources": {
+    "coins": {
+      "count": 20,
+      "fields": {
+        "id": "uuid",
+        "symbol": {
+          "type": "enum",
+          "values": ["BTC", "ETH", "SOL", "ADA", "DOT"]
+        },
+        "name": {
+          "type": "enum",
+          "values": ["Bitcoin", "Ethereum", "Solana", "Cardano", "Polkadot"]
+        },
+        "currentPrice": { "type": "number", "min": 1, "max": 65000 },
+        "marketCap": { "type": "number", "min": 1000000, "max": 1200000000000 },
+        "rank": { "type": "number", "min": 1, "max": 20 },
+        "isActive": { "type": "boolean" }
+      }
+    },
+    "wallets": {
+      "count": 30,
+      "fields": {
+        "id": "uuid",
+        "userId": { "type": "ref", "resource": "users" },
+        "coinId": { "type": "ref", "resource": "coins" },
+        "balance": { "type": "number", "min": 0, "max": 10 }
+      }
+    },
+    "users": {
+      "count": 15,
+      "fields": {
+        "id": "uuid",
+        "firstName": "firstName",
+        "email": "email",
+        "kycStatus": {
+          "type": "enum",
+          "values": ["pending", "verified", "rejected"]
+        },
+        "totalBalance": { "type": "number", "min": 0, "max": 500000 }
+      },
+      "relations": {
+        "wallets": "wallets"
+      }
+    }
+  },
+  "config": {
+    "delay": 100,
+    "errorRate": 0.01
+  }
+}
+```
+
+Run it:
+
+```bash
+mockapi-local serve crypto-schema.json --port 4000
+```
+
+You instantly get **15 users**, **20 coins**, **30 wallets** with proper references, and endpoints like:
+
+- `GET /coins?sort=rank&order=asc` — List coins sorted by rank
+- `GET /users/:id/wallets` — Get a user's wallets
+- `GET /wallets?coinId=<uuid>` — Filter wallets by coin
+- `POST /coins` — Add a new coin
+
+![API response example](docs/api-response-screenshot.png)
 
 ---
 
@@ -374,7 +482,7 @@ The `config` section in your schema controls server behavior:
 
 ## 📦 Programmatic Usage
 
-You can also use mockapi-local programmatically:
+> Use mockapi-local as a library inside your test suites or Node.js scripts — no CLI required.
 
 ```javascript
 import { startServer } from "mockapi-local";
