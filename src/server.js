@@ -102,15 +102,15 @@ export async function startServer(schema, options) {
   }
 
   // Graceful shutdown
-  const shutdown = async (signal) => {
-    process.stdout.write(
-      `\n  Received ${signal}, shutting down gracefully...\n`
-    );
-    await app.close();
-    process.exit(0);
+  let isShuttingDown = false;
+  const shutdown = (signal) => {
+    if (isShuttingDown) return;
+    isShuttingDown = true;
+    process.stdout.write(`\n  Received ${signal}, shutting down...\n`);
+    app.close().finally(() => process.exit(0));
   };
-  process.on("SIGINT", () => shutdown("SIGINT"));
-  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.once("SIGINT", () => shutdown("SIGINT"));
+  process.once("SIGTERM", () => shutdown("SIGTERM"));
 
   // Display startup banner
   const resourceNames = Object.keys(schema.resources || {});
