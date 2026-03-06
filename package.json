@@ -47,11 +47,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mockapi-local/mockapi-local.git"
+    "url": "git+https://github.com/Hasanayvzz/mockapi-local.git"
   },
-  "homepage": "https://github.com/mockapi-local/mockapi-local#readme",
+  "homepage": "https://github.com/Hasanayvzz/mockapi-local#readme",
   "bugs": {
-    "url": "https://github.com/mockapi-local/mockapi-local/issues"
+    "url": "https://github.com/Hasanayvzz/mockapi-local/issues"
   },
   "dependencies": {
     "@faker-js/faker": "^9.0.0",
