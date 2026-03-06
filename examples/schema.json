@@ -1,0 +1,223 @@
+{
+  "resources": {
+    "coins": {
+      "count": 20,
+      "fields": {
+        "id": "uuid",
+        "symbol": {
+          "type": "enum",
+          "values": [
+            "BTC",
+            "ETH",
+            "BNB",
+            "SOL",
+            "ADA",
+            "XRP",
+            "DOT",
+            "AVAX",
+            "MATIC",
+            "LINK",
+            "UNI",
+            "ATOM",
+            "LTC",
+            "DOGE",
+            "SHIB",
+            "TRX",
+            "XLM",
+            "ALGO",
+            "VET",
+            "FIL"
+          ]
+        },
+        "name": {
+          "type": "enum",
+          "values": [
+            "Bitcoin",
+            "Ethereum",
+            "BNB",
+            "Solana",
+            "Cardano",
+            "XRP",
+            "Polkadot",
+            "Avalanche",
+            "Polygon",
+            "Chainlink",
+            "Uniswap",
+            "Cosmos",
+            "Litecoin",
+            "Dogecoin",
+            "Shiba Inu",
+            "TRON",
+            "Stellar",
+            "Algorand",
+            "VeChain",
+            "Filecoin"
+          ]
+        },
+        "currentPrice": { "type": "float", "min": 0.00001, "max": 65000 },
+        "priceChangePercent24h": { "type": "float", "min": -20, "max": 20 },
+        "marketCap": { "type": "number", "min": 1000000, "max": 1200000000000 },
+        "volume24h": { "type": "number", "min": 500000, "max": 30000000000 },
+        "circulatingSupply": {
+          "type": "number",
+          "min": 1000000,
+          "max": 21000000
+        },
+        "maxSupply": {
+          "type": "number",
+          "min": 21000000,
+          "max": 1000000000000
+        },
+        "allTimeHigh": { "type": "float", "min": 0.001, "max": 69000 },
+        "rank": { "type": "number", "min": 1, "max": 20 },
+        "logoUrl": "image",
+        "isActive": { "type": "boolean" }
+      }
+    },
+    "users": {
+      "count": 15,
+      "fields": {
+        "id": "uuid",
+        "firstName": "firstName",
+        "lastName": "lastName",
+        "email": "email",
+        "phone": "phone",
+        "avatarUrl": "image",
+        "kycStatus": {
+          "type": "enum",
+          "values": ["pending", "verified", "rejected", "not_submitted"]
+        },
+        "twoFactorEnabled": { "type": "boolean" },
+        "country": "country",
+        "referralCode": "alphanumeric",
+        "totalBalance": { "type": "float", "min": 0, "max": 500000 },
+        "createdAt": "pastDate"
+      },
+      "relations": {
+        "wallets": "wallets",
+        "orders": "orders",
+        "transactions": "transactions"
+      }
+    },
+    "wallets": {
+      "count": 30,
+      "fields": {
+        "id": "uuid",
+        "userId": { "type": "ref", "resource": "users" },
+        "coinId": { "type": "ref", "resource": "coins" },
+        "address": "uuid",
+        "balance": { "type": "float", "min": 0, "max": 10 },
+        "lockedBalance": { "type": "float", "min": 0, "max": 1 },
+        "totalDeposited": { "type": "float", "min": 0, "max": 50 },
+        "totalWithdrawn": { "type": "float", "min": 0, "max": 20 },
+        "createdAt": "pastDate"
+      },
+      "relations": {
+        "user": "users",
+        "coin": "coins"
+      }
+    },
+    "orders": {
+      "count": 40,
+      "fields": {
+        "id": "uuid",
+        "userId": { "type": "ref", "resource": "users" },
+        "coinId": { "type": "ref", "resource": "coins" },
+        "type": {
+          "type": "enum",
+          "values": ["market", "limit", "stop_limit", "stop_market"]
+        },
+        "side": { "type": "enum", "values": ["buy", "sell"] },
+        "status": {
+          "type": "enum",
+          "values": [
+            "open",
+            "filled",
+            "partially_filled",
+            "cancelled",
+            "expired"
+          ]
+        },
+        "price": { "type": "float", "min": 0.001, "max": 65000 },
+        "stopPrice": { "type": "float", "min": 0.001, "max": 65000 },
+        "amount": { "type": "float", "min": 0.0001, "max": 5 },
+        "filledAmount": { "type": "float", "min": 0, "max": 5 },
+        "total": { "type": "float", "min": 10, "max": 100000 },
+        "fee": { "type": "float", "min": 0.001, "max": 50 },
+        "feePercent": { "type": "float", "min": 0.01, "max": 0.5 },
+        "createdAt": "pastDate",
+        "updatedAt": "pastDate"
+      },
+      "relations": {
+        "user": "users",
+        "coin": "coins"
+      }
+    },
+    "transactions": {
+      "count": 40,
+      "fields": {
+        "id": "uuid",
+        "userId": { "type": "ref", "resource": "users" },
+        "coinId": { "type": "ref", "resource": "coins" },
+        "type": {
+          "type": "enum",
+          "values": [
+            "deposit",
+            "withdrawal",
+            "trade",
+            "fee",
+            "referral_bonus",
+            "staking_reward"
+          ]
+        },
+        "status": {
+          "type": "enum",
+          "values": ["pending", "completed", "failed", "cancelled"]
+        },
+        "amount": { "type": "float", "min": 0.0001, "max": 10 },
+        "fee": { "type": "float", "min": 0, "max": 0.01 },
+        "txHash": "uuid",
+        "fromAddress": "uuid",
+        "toAddress": "uuid",
+        "network": {
+          "type": "enum",
+          "values": ["ERC20", "BEP20", "TRC20", "Native", "Polygon"]
+        },
+        "confirmations": { "type": "number", "min": 0, "max": 20 },
+        "requiredConfirmations": { "type": "number", "min": 3, "max": 12 },
+        "note": "sentence",
+        "createdAt": "pastDate"
+      },
+      "relations": {
+        "user": "users",
+        "coin": "coins"
+      }
+    },
+    "markets": {
+      "count": 15,
+      "fields": {
+        "id": "uuid",
+        "baseCoinId": { "type": "ref", "resource": "coins" },
+        "quoteCoin": {
+          "type": "enum",
+          "values": ["USDT", "BTC", "ETH", "BNB"]
+        },
+        "lastPrice": { "type": "float", "min": 0.001, "max": 65000 },
+        "high24h": { "type": "float", "min": 0.001, "max": 70000 },
+        "low24h": { "type": "float", "min": 0.001, "max": 60000 },
+        "volume24h": { "type": "float", "min": 1000, "max": 1000000000 },
+        "priceChangePercent": { "type": "float", "min": -15, "max": 15 },
+        "bidPrice": { "type": "float", "min": 0.001, "max": 65000 },
+        "askPrice": { "type": "float", "min": 0.001, "max": 65000 },
+        "isActive": { "type": "boolean" }
+      },
+      "relations": {
+        "baseCoin": "coins"
+      }
+    }
+  },
+  "config": {
+    "delay": 100,
+    "errorRate": 0.01
+  }
+}
